@@ -1,0 +1,44 @@
+name: daraz_clone
+description: "A Daraz-style Flutter web app with Fakestore API — features collapsible header, sticky tab bar, and conflict-free scroll architecture."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # ─── UI ────────────────────────────────────────────────────────────────────
+  cupertino_icons: ^1.0.8
+
+  # Cached network images — avoids re-fetching product images on every rebuild.
+  # Uses an in-memory + disk cache under the hood.
+  cached_network_image: ^3.4.1
+
+  # ─── State Management ──────────────────────────────────────────────────────
+  # Riverpod 2.x — compile-safe providers, no BuildContext needed in logic.
+  flutter_riverpod: ^2.6.1
+
+  # ─── Networking ────────────────────────────────────────────────────────────
+  # Dio — feature-rich HTTP client; supports interceptors, base URL, timeouts.
+  dio: ^5.8.0+1
+
+  # ─── Navigation ────────────────────────────────────────────────────────────
+  # go_router — declarative, URL-based routing suitable for web apps.
+  go_router: ^14.8.1
+
+  # ─── Persistence ───────────────────────────────────────────────────────────
+  # shared_preferences — key-value storage that works on Flutter Web (no native libs needed).
+  # We use this instead of flutter_secure_storage because web doesn't support it.
+  shared_preferences: ^2.3.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
