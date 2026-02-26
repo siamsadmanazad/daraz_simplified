@@ -1,12 +1,12 @@
 {
-    "name": "daraz_clone",
-    "short_name": "daraz_clone",
+    "name": "Daraz Clone",
+    "short_name": "Daraz",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#FF6000",
+    "theme_color": "#FF6000",
+    "description": "A Daraz-style e-commerce app built with Flutter, powered by the Fakestore API.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

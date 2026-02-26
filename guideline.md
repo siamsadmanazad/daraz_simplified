@@ -146,37 +146,96 @@ CustomScrollView (THE ONLY VERTICAL SCROLL OWNER)
 
 ## Phase 8: Build & Deploy for Web
 
-### Step 8.1 — Web Build
+### Step 8.1 — Fix SPA routing before building
 
-**Prompt:**
-> "I have a Flutter web app and need to deploy the build/web/ folder to a static hosting service. Walk me through: (1) running flutter build web --release, (2) what's inside build/web/ and what each file does, (3) deploying to Netlify via drag-and-drop (the fastest option for submission), (4) deploying to GitHub Pages as an alternative, (5) deploying to Vercel as another alternative. Include what CORS issues I might face with Fakestore API from a deployed domain and how to handle them."
+Flutter web uses client-side routing (GoRouter). Netlify serves static files, so refreshing any URL other than `/` returns a 404. Fix this by adding a `_redirects` file to the `web/` source folder — Flutter copies it into `build/web/` automatically during the build.
 
-### Step 8.2 — Deploy to Netlify (Recommended for Speed)
+Create `web/_redirects` with exactly this content:
+```
+/* /index.html 200
+```
 
-Steps:
-1. Run `flutter build web --release`
-2. Go to [netlify.com](https://netlify.com) → drag your `build/web/` folder into the deploy zone
-3. Get your live URL instantly (something like `https://random-name.netlify.app`)
-4. Done — this is your submission URL
+That's it. One line. Every URL gets served `index.html` and Flutter's router takes over from there.
 
-**Prompt for CORS handling if needed:**
-> "My Flutter web app deployed on Netlify is calling Fakestore API at fakestoreapi.com. I'm getting CORS errors in the browser console. Fakestore API supports CORS, so this might be a configuration issue. What could cause CORS errors with Fakestore API specifically from Flutter web, and how do I fix it? Should I use a netlify.toml with proxy rules, or is there another approach?"
+### Step 8.2 — Build the release bundle
+
+```bash
+flutter build web --release
+```
+
+This produces `build/web/`. The key files inside:
+- `index.html` — entry point Netlify serves for every route (thanks to `_redirects`)
+- `main.dart.js` — your compiled Flutter app (several MB, minified)
+- `flutter.js` / `flutter_bootstrap.js` — Flutter web engine loader
+- `assets/` — fonts, images, and asset manifest
+- `_redirects` — the routing fix from Step 8.1
+
+Do **not** commit `build/web/` to git. It's regenerated every build and is large.
+
+### Step 8.3 — Deploy via drag-and-drop (fastest path)
+
+1. Go to [netlify.com](https://netlify.com) and sign in (or create a free account)
+2. From your dashboard, click **"Add new site"** → **"Deploy manually"**
+3. Drag your `build/web/` folder into the upload zone
+4. Netlify processes it (takes ~10–30 seconds) and gives you a live URL like `https://random-name.netlify.app`
+5. Test the URL — open it, log in with `mor_2314` / `83r5^_`, navigate around, and **refresh on an inner page** to confirm the `_redirects` fix is working
+
+That URL is your submission URL.
+
+### Step 8.4 — Optional: rename the site
+
+In Netlify → Site settings → Site details → **Change site name** → set something readable like `daraz-clone-yourname`. Your URL becomes `https://daraz-clone-yourname.netlify.app`.
+
+### Step 8.5 — Optional: Git-based continuous deployment
+
+If you push code to GitHub and want Netlify to redeploy automatically on every push:
+
+1. In Netlify → **"Add new site"** → **"Import an existing project"** → Connect to GitHub
+2. Select your repo
+3. Set these build settings:
+   - **Build command:** `flutter/bin/flutter build web --release`
+   - **Publish directory:** `build/web`
+   - **Environment variable:** `FLUTTER_VERSION` = `3.27.0` (or your current version)
+4. Netlify will install Flutter and build on every push to `main`
+
+For CI builds you also need a `netlify.toml` at the project root:
+```toml
+[build]
+  command = "flutter/bin/flutter build web --release"
+  publish = "build/web"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+The `[[redirects]]` block here replaces the `_redirects` file — use one or the other, not both.
 
 ---
 
 ## Phase 9: GitHub Repository Setup
 
-### Step 9.1 — Repo Structure
+### Step 9.1 — Repo Structure ✅ (partial)
 
-**Prompt:**
-> "Give me a .gitignore for a Flutter project and tell me which folders/files I should commit. Should I commit the build/web/ folder? What should my repository README include at the top to make it easy for evaluators to: (1) clone and run locally, (2) visit the live deployed URL, (3) understand the architecture in under 2 minutes?"
+**Status:** `git init`, initial commits, and project structure are done. Remaining: push to GitHub and add the live URL.
 
-Steps:
-1. `git init` in project root
-2. Add `.gitignore` (Flutter default)
-3. `git add .` and commit
-4. Push to GitHub
-5. Add live URL to the repo description and README
+Steps completed:
+- ✅ `git init` in project root
+- ✅ `.gitignore` (Flutter default)
+- ✅ Initial commit(s) pushed locally
+
+Steps remaining:
+1. Push to GitHub:
+   ```bash
+   git remote add origin https://github.com/YOUR_USERNAME/daraz-clone.git
+   git push -u origin main
+   ```
+2. Add live Netlify URL to the repo description field on GitHub
+3. Add live URL near the top of `README.md`:
+   ```markdown
+   **Live demo:** https://your-site-name.netlify.app
+   ```
 
 ---
 

@@ -85,9 +85,13 @@ class ProfileScreen extends ConsumerWidget {
           return SingleChildScrollView(
             // SingleChildScrollView here is fine — ProfileScreen is a separate
             // route, completely outside the CustomScrollView on the home screen.
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
                 // ── Avatar ─────────────────────────────────────────────────
                 _buildAvatar(user.name.fullName),
                 const SizedBox(height: 12),
@@ -142,7 +146,10 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-              ],
+                    ],
+                  ),
+                ),
+              ),
             ),
           );
         },

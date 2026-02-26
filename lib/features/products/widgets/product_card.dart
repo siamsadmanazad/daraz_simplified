@@ -41,7 +41,7 @@ class ProductCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Product image ─────────────────────────────────────────────────
-          _buildImage(),
+          Expanded(child: _buildImage()),
 
           // ── Text details ──────────────────────────────────────────────────
           Padding(
@@ -71,29 +71,25 @@ class ProductCard extends StatelessWidget {
   // ── Private builders ──────────────────────────────────────────────────────
 
   Widget _buildImage() {
-    return AspectRatio(
-      // Square image region — works in both grid and list layouts.
-      aspectRatio: 1,
-      child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(12),
-        child: CachedNetworkImage(
-          imageUrl: product.image,
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(12),
+      child: CachedNetworkImage(
+        imageUrl: product.image,
 
-          // Placeholder shown while the image loads — keeps layout stable.
-          placeholder: (_, __) => const Center(
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-
-          // Fallback shown if the URL is broken or there's no internet.
-          errorWidget: (_, __, ___) => const Icon(
-            Icons.image_not_supported_outlined,
-            color: Colors.grey,
-            size: 40,
-          ),
-
-          fit: BoxFit.contain,
+        // Placeholder shown while the image loads — keeps layout stable.
+        placeholder: (_, __) => const Center(
+          child: CircularProgressIndicator(strokeWidth: 2),
         ),
+
+        // Fallback shown if the URL is broken or there's no internet.
+        errorWidget: (_, __, ___) => const Icon(
+          Icons.image_not_supported_outlined,
+          color: Colors.grey,
+          size: 40,
+        ),
+
+        fit: BoxFit.contain,
       ),
     );
   }

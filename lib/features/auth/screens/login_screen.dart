@@ -77,22 +77,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: SingleChildScrollView(
           // SingleChildScrollView here is fine — this is a standalone screen,
           // NOT inside the CustomScrollView hierarchy used on the home screen.
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              // ── Daraz-style header ────────────────────────────────────────
-              _buildHeader(),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: [
+                    // ── Daraz-style header ──────────────────────────────────
+                    _buildHeader(),
 
-              const SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
-              // ── Login card ───────────────────────────────────────────────
-              _buildLoginCard(isLoading, errorMessage),
+                    // ── Login card ──────────────────────────────────────────
+                    _buildLoginCard(isLoading, errorMessage),
 
-              const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-              // ── Demo credentials hint ─────────────────────────────────────
-              _buildHint(),
-            ],
+                    // ── Demo credentials hint ───────────────────────────────
+                    _buildHint(),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),

@@ -232,7 +232,7 @@ class _ProductListingScreenState extends ConsumerState<ProductListingScreen>
             // This Consumer rebuilds ONLY the grid when the active tab or
             // product data changes — the SliverAppBar and tab bar are
             // completely unaffected.
-            _buildProductSliver(),
+            _buildProductSliver(MediaQuery.of(context).size.width),
           ],
         ),
       ),
@@ -275,23 +275,28 @@ class _ProductListingScreenState extends ConsumerState<ProductListingScreen>
       // PreferredSize tells the AppBar how much vertical space this takes.
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(48),
-        child: Container(
-          height: 40,
-          margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Row(
-            children: [
-              SizedBox(width: 10),
-              Icon(Icons.search, color: Colors.grey, size: 20),
-              SizedBox(width: 8),
-              Text(
-                'Search in Daraz',
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Container(
+              height: 40,
+              margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
               ),
-            ],
+              child: const Row(
+                children: [
+                  SizedBox(width: 10),
+                  Icon(Icons.search, color: Colors.grey, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    'Search in Daraz',
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -338,7 +343,7 @@ class _ProductListingScreenState extends ConsumerState<ProductListingScreen>
   /// We use a [Consumer] widget (not [ConsumerWidget]) to scope the rebuild
   /// to just the grid — the SliverAppBar and tab bar above it are NOT
   /// affected when the product list changes.
-  Widget _buildProductSliver() {
+  Widget _buildProductSliver(double screenWidth) {
     return Consumer(
       builder: (context, ref, _) {
         final productsAsync = ref.watch(activeProductsProvider);
@@ -390,10 +395,9 @@ class _ProductListingScreenState extends ConsumerState<ProductListingScreen>
               padding: const EdgeInsets.all(8),
               sliver: SliverGrid(
                 // 2-column fixed cross-axis layout — standard Daraz grid.
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.62, // taller than wide to fit all content
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: screenWidth >= 1024 ? 4 : screenWidth >= 600 ? 3 : 2,
+                  childAspectRatio: screenWidth >= 1024 ? 0.72 : screenWidth >= 600 ? 0.68 : 0.62,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
